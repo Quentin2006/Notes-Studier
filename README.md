@@ -12,6 +12,7 @@ By leveraging AI, the application helps users to quickly generate summaries, qui
 - **Frontend:** React, Tailwind
 - **Backend:** Node.js, Express
 - **Database:** MongoDB
+- **Rate Limiter:** Upstash
 
 ## Features
 
