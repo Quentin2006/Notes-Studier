@@ -23,7 +23,7 @@ By leveraging AI, the application helps users to quickly generate summaries, qui
 
 ## Demo
 
-Screenshots: N/A
+URL: <https://notes-studier.onrender.com/>
 
 ## Installation
 
