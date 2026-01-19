@@ -13,6 +13,7 @@ By leveraging AI, the application helps users to quickly generate summaries, qui
 - **Backend:** Node.js, Express
 - **Database:** MongoDB
 - **Rate Limiter:** Upstash
+- **Hoster:** Render.com
 
 ## Features
 
@@ -29,6 +30,6 @@ Screenshots: N/A
 ```bash
 git clone https://github.com/Quentin2006/Notes-Studier.git
 cd Notes-Studier
-npm install
+npm run build
 npm run start
 

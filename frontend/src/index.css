@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+  
+  .glass-strong {
+    @apply bg-white/15 backdrop-blur-lg border border-white/30;
+  }
+  
+  .glass-dark {
+    @apply bg-black/20 backdrop-blur-md border border-white/10;
+  }
+  
+  .glass-button {
+    @apply glass hover:bg-white/20 transition-all duration-300 active:scale-95;
+  }
+  
+  .glass-input {
+    @apply bg-white/5 backdrop-blur-sm border border-white/20 focus:border-white/40 focus:outline-none transition-all duration-300;
+  }
+}
