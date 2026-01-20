@@ -1,16 +1,24 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useNotes } from '../hooks/useNotes';
+import { useQuizzes } from '../hooks/useQuizzes';
+import { useToast } from '../components/useToast';
 import { NoteCard } from '../components/NoteCard';
 import { NoteForm } from '../components/NoteForm';
 import { DeleteModal } from '../components/DeleteModal';
+import { QuizLoader } from '../components/QuizLoader';
 import type { Note } from '../types';
 
 export const Home = () => {
+  const navigate = useNavigate();
+  const { showToast } = useToast();
   const { notes, isLoading, error, createNote, updateNote, deleteNote, isCreating, isUpdating, isDeleting } = useNotes();
+  const { createQuiz } = useQuizzes();
   
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | undefined>();
   const [deletingNote, setDeletingNote] = useState<Note | undefined>();
+  const [generatingQuizNoteId, setGeneratingQuizNoteId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredNotes = notes.filter(note => 
@@ -33,6 +41,25 @@ export const Home = () => {
     if (deletingNote) {
       await deleteNote(deletingNote._id);
       setDeletingNote(undefined);
+    }
+  };
+
+  const handleGenerateQuiz = async (noteId: string) => {
+    const note = notes.find(n => n._id === noteId);
+    if (!note) return;
+
+    setGeneratingQuizNoteId(noteId);
+    
+    try {
+      const quiz = await createQuiz(noteId);
+      showToast('Quiz generated! Navigating...', 'success');
+      setTimeout(() => {
+        navigate(`/quizzes/${quiz._id}`);
+        setGeneratingQuizNoteId(null);
+      }, 1000);
+    } catch {
+      showToast('Failed to generate quiz', 'error');
+      setGeneratingQuizNoteId(null);
     }
   };
 
@@ -106,6 +133,8 @@ export const Home = () => {
               note={note}
               onEdit={setEditingNote}
               onDelete={setDeletingNote}
+              onGenerateQuiz={handleGenerateQuiz}
+              isGenerating={generatingQuizNoteId === note._id}
             />
           ))}
         </div>
@@ -130,6 +159,10 @@ export const Home = () => {
         isDeleting={isDeleting}
         noteTitle={deletingNote?.title}
       />
+
+      {generatingQuizNoteId && (
+        <QuizLoader noteTitle={notes.find(n => n._id === generatingQuizNoteId)?.title || ''} />
+      )}
     </div>
   );
 };

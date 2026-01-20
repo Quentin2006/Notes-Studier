@@ -14,6 +14,7 @@ By leveraging AI, the application helps users to quickly generate summaries, qui
 - **Database:** MongoDB
 - **Rate Limiter:** Upstash
 - **Hoster:** Render.com
+- **AI:** Gemini
 
 ## Features
 
