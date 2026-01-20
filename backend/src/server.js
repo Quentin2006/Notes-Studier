@@ -1,5 +1,5 @@
-import express from 'express';
 import dotenv from 'dotenv';
+import express from 'express';
 import cors from 'cors';
 import path from 'path';
 
@@ -8,13 +8,11 @@ import quizesRoutes from './routes/quizesRoutes.js';
 import { connectDB } from './config/db.js';
 import rateLimiter from './middleware/rateLimiter.js';
 
-dotenv.config();
-
+dotenv.config()
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 const __dirname = path.resolve();
-
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(
