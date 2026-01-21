@@ -19,8 +19,14 @@ export const Quizzes = () => {
 
   const handleDeleteQuiz = async () => {
     if (deletingQuiz) {
-      await deleteQuiz(deletingQuiz._id);
-      setDeletingQuiz(undefined);
+      try {
+        console.log('Deleting quiz:', deletingQuiz._id);
+        await deleteQuiz(deletingQuiz._id);
+        console.log('Quiz deleted successfully');
+        setDeletingQuiz(undefined);
+      } catch (error) {
+        console.error('Failed to delete quiz:', error);
+      }
     }
   };
 

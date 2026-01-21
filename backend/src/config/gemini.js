@@ -5,39 +5,50 @@ dotenv.config();
 
 export const DEFAULT_QUIZ_PROMPT =
   `
-You are a quiz generator.You will be given a "note" object that contains a title, subject, and a list of key points or content.Your task is to generate a quiz JSON that matches the following schema:
+Role: You are an expert Quiz Generation Engine.
 
+Task: Create a structured JSON quiz based on a provided "note" object.
+
+Input Format: The user will provide a JSON object with the following structure:
+
+title: (string)
+
+subject: (string)
+
+content: (array of strings)
+
+Output Requirements:
+
+JSON Only: Return only valid JSON. Do not include any preamble, markdown code blocks (unless requested), or post-quiz explanation.
+
+Schema: The output must strictly follow this JSON structure:
+
+JSON:
 {
-"title": string,
-"subject": string,
-"questions": [
-{
-"question": string,
-"answer": [string],
-"correctAnswer": number  // index of correct answer in the answer array
+  "title": "String",
+  "subject": "String",
+  "questions": [
+    {
+      "question": "String",
+      "answers": ["Option 1", "Option 2", "Option 3"],
+      "correctAnswer": 0
+    }
+  ]
 }
-]
-}
+Question Logic: * Generate exactly 5 multiple-choice questions.
 
-Rules:
-1. Use the title and subject from the supplied note object.
-2. Generate 5 multiple - choice questions based on the note content.
-3. Each question must have exactly 3 answer options.
-4. The correct answer must be clearly one of the options.
-5. Output ONLY valid JSON(no extra text, no explanation).
+Each question must have exactly 3 options.
 
-Example note object:
-{
-"title": "Sample Note",
-"subject": "This is a sample note about the water cycle.",
-"content": [
-"Evaporation is the process of water turning into vapor.",
-"Condensation forms clouds.",
-"Precipitation falls as rain or snow."
-]
-}
+The correctAnswer must be the 0-based index of the correct string in the answers array.
 
-Now generate the quiz using the following supplied note object.
+Distractors (wrong answers) must be plausible and related to the subject.
+
+Source Fidelity: Use only the information provided in the content list. If the content is too brief for 5 unique questions, expand on the concepts logically while staying true to the subject.
+
+Your response must start with { and end with }. Do not use markdown formatting or code blocks.
+
+Input Note Object:
+
 `
 
 if (!process.env.GEMINI_API_KEY) {

@@ -7,14 +7,37 @@ interface QuizTakerProps {
 }
 
 export const QuizTaker = ({ quiz, onComplete }: QuizTakerProps) => {
+  const hasValidQuiz = quiz && quiz.questions && quiz.questions.length > 0;
+  const questions = hasValidQuiz ? quiz.questions : [];
+  
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<number[]>(new Array(quiz.questions.length).fill(-1));
+  const [userAnswers, setUserAnswers] = useState<number[]>(new Array(questions.length).fill(-1));
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showCorrect, setShowCorrect] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
 
-  const currentQuestion = quiz.questions[currentQuestionIndex];
-  const isLastQuestion = currentQuestionIndex === quiz.questions.length - 1;
+  if (!hasValidQuiz) {
+    console.error('QuizTaker: Invalid quiz data', quiz);
+    return (
+      <div className="glass-strong rounded-2xl p-8 text-center">
+        <h2 className="text-xl font-bold text-white mb-2">Invalid Quiz</h2>
+        <p className="text-white/70">This quiz has no questions.</p>
+      </div>
+    );
+  }
+
+  const currentQuestion = questions[currentQuestionIndex];
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
+  if (!currentQuestion || !currentQuestion.question || !currentQuestion.answers || currentQuestion.answers.length === 0) {
+    console.error('QuizTaker: Invalid question data', { currentQuestion, index: currentQuestionIndex });
+    return (
+      <div className="glass-strong rounded-2xl p-8 text-center">
+        <h2 className="text-xl font-bold text-white mb-2">Error</h2>
+        <p className="text-white/70">Question data is invalid.</p>
+      </div>
+    );
+  }
 
   const handleAnswerSelect = (answerIndex: number) => {
     setSelectedAnswer(answerIndex);
@@ -28,7 +51,7 @@ export const QuizTaker = ({ quiz, onComplete }: QuizTakerProps) => {
   const handleNext = () => {
     if (isLastQuestion) {
       const correctAnswers = userAnswers.reduce((count, answer, index) => {
-        if (answer === quiz.questions[index].correctAnswer) {
+        if (answer === questions[index].correctAnswer) {
           return count + 1;
         }
         return count;
@@ -53,7 +76,7 @@ export const QuizTaker = ({ quiz, onComplete }: QuizTakerProps) => {
   const handleSkip = () => {
     if (isLastQuestion) {
       const correctAnswers = userAnswers.reduce((count, answer, index) => {
-        if (answer === quiz.questions[index].correctAnswer) {
+        if (answer === questions[index].correctAnswer) {
           return count + 1;
         }
         return count;
@@ -69,7 +92,7 @@ export const QuizTaker = ({ quiz, onComplete }: QuizTakerProps) => {
 
   const handleTakeAgain = () => {
     setCurrentQuestionIndex(0);
-    setUserAnswers(new Array(quiz.questions.length).fill(-1));
+    setUserAnswers(new Array(questions.length).fill(-1));
     setSelectedAnswer(null);
     setShowCorrect(false);
     setIsComplete(false);
@@ -77,12 +100,12 @@ export const QuizTaker = ({ quiz, onComplete }: QuizTakerProps) => {
 
   if (isComplete) {
     const correctAnswers = userAnswers.reduce((count, answer, index) => {
-      if (answer === quiz.questions[index].correctAnswer) {
+      if (answer === questions[index].correctAnswer) {
         return count + 1;
       }
       return count;
     }, 0);
-    const percentage = Math.round((correctAnswers / quiz.questions.length) * 100);
+    const percentage = Math.round((correctAnswers / questions.length) * 100);
 
     return (
       <div className="glass-strong rounded-2xl p-8 text-center">
@@ -91,7 +114,7 @@ export const QuizTaker = ({ quiz, onComplete }: QuizTakerProps) => {
         </h2>
         <div className="bg-white/10 rounded-xl p-6 mb-6">
           <p className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-            {correctAnswers}/{quiz.questions.length}
+            {correctAnswers}/{questions.length}
           </p>
           <p className="text-white/70 text-lg">
             {percentage}% Correct
@@ -116,7 +139,7 @@ export const QuizTaker = ({ quiz, onComplete }: QuizTakerProps) => {
           {quiz.title}
         </h2>
         <span className="text-sm text-white/60">
-          Question {currentQuestionIndex + 1} of {quiz.questions.length}
+          Question {currentQuestionIndex + 1} of {questions.length}
         </span>
       </div>
 

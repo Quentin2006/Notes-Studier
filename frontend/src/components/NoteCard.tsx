@@ -15,7 +15,7 @@ export const NoteCard = ({ note, onEdit, onDelete, onGenerateQuiz, isGenerating 
     year: 'numeric',
   });
 
-  const canGenerateQuiz = note.content.length >= 50;
+  const canGenerateQuiz = note.content && note.content.length >= 50;
 
   return (
     <div className="glass rounded-2xl p-6 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl group">

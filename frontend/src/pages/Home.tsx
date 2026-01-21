@@ -46,19 +46,35 @@ export const Home = () => {
 
   const handleGenerateQuiz = async (noteId: string) => {
     const note = notes.find(n => n._id === noteId);
-    if (!note) return;
+    if (!note) {
+      console.error('Quiz generation failed: Note not found', noteId);
+      return;
+    }
 
     setGeneratingQuizNoteId(noteId);
     
     try {
+      console.log('Generating quiz for note:', note.title);
       const quiz = await createQuiz(noteId);
-      showToast('Quiz generated! Navigating...', 'success');
-      setTimeout(() => {
-        navigate(`/quizzes/${quiz._id}`);
-        setGeneratingQuizNoteId(null);
-      }, 1000);
-    } catch {
-      showToast('Failed to generate quiz', 'error');
+      console.log('Quiz generated successfully:', quiz);
+      
+      if (!quiz || !quiz._id) {
+        console.error('Invalid quiz response:', quiz);
+        throw new Error('Invalid quiz response from server');
+      }
+      
+      if (!quiz.questions || !Array.isArray(quiz.questions) || quiz.questions.length === 0) {
+        console.error('Quiz has no valid questions:', quiz);
+        throw new Error('Quiz generated with no questions');
+      }
+      
+      showToast('Quiz generated!', 'success');
+      navigate(`/quizzes/${quiz._id}`);
+      setGeneratingQuizNoteId(null);
+    } catch (error) {
+      console.error('Quiz generation failed:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to generate quiz';
+      showToast(errorMessage, 'error');
       setGeneratingQuizNoteId(null);
     }
   };

@@ -11,8 +11,12 @@ export const useQuizzes = () => {
 
   const createQuizMutation = useMutation({
     mutationFn: quizzesApi.createQuiz,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('Quiz created successfully:', data);
       queryClient.invalidateQueries({ queryKey: ['quizzes'] });
+    },
+    onError: (error) => {
+      console.error('Failed to create quiz:', error);
     },
   });
 
